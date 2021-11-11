@@ -1,33 +1,46 @@
 import { useEffect, useState } from "react";
-import localContract from "./configs/lottery";
-import web3Config from "./configs/web3";
+import lotteryContract from "./configs/lottery";
+import web3 from "./configs/web3";
 
 const App = () => {
 	const [manager, setManager] = useState("");
+	const [players, setPlayers] = useState([]);
+	const [balance, setBalance] = useState("");
 
 	useEffect(() => {
-		const getManager = async () => {
+		const asynFunctions = async () => {
 			try {
-				const accounts = await web3Config.eth.getAccounts();
-				console.log(accounts);
+				const getManager = await lotteryContract.methods.manager().call();
+				const getPlayers = await lotteryContract.methods.getPlayers().call();
+				const getBalance = await web3.eth.getBalance(
+					lotteryContract.options.address
+				);
 
-				const res = await localContract.methods.manager().call();
+				const [manager, players, balance] = await Promise.all([
+					getManager,
+					getPlayers,
+					getBalance,
+				]);
 
-				console.log(res);
-
-				setManager(res);
+				setManager(manager);
+				setPlayers(players);
+				setBalance(web3.utils.fromWei(balance, "ether"));
 			} catch (error) {
 				console.log(error);
 			}
 		};
 
-		getManager();
+		asynFunctions();
 	}, []);
 
 	return (
 		<div>
 			<h2>Lottery Contract</h2>
 			<p>This Contract is managed by {manager}</p>
+			<p>
+				They are currently {players?.length} people entered competing to win{" "}
+				{balance} ether
+			</p>
 		</div>
 	);
 };
