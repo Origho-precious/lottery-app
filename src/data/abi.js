@@ -63,8 +63,21 @@ const contractAbi = [
 		stateMutability: "view",
 		type: "function",
 	},
+	{
+		inputs: [],
+		name: "winner",
+		outputs: [
+			{
+				internalType: "address",
+				name: "",
+				type: "address",
+			},
+		],
+		stateMutability: "view",
+		type: "function",
+	},
 ];
 
-export const contractAddress = "0x3a5e124d69c1789a97baa632089067ebe94147b8";
+export const contractAddress = "0x7261B1B7297526Ae569AB205B31037D37582383E";
 
 export default contractAbi;
